@@ -20,8 +20,8 @@
     }
     #animation-container {
       width: 100%;
-      max-width: 400px; /* 限制最大宽度 */
-      height: 300px; /* 初始高度 */
+      max-width: 400px;
+      height: 300px;
       margin-bottom: 20px;
       border: 2px dashed #555;
       display: flex;
@@ -71,7 +71,6 @@
       const fileInput = document.getElementById('file-input');
       let animation;
 
-      // 监听文件选择
       fileInput.addEventListener('change', () => {
         const file = fileInput.files[0];
         if (!file) {
@@ -83,13 +82,14 @@
         reader.onload = function (event) {
           try {
             const animationData = JSON.parse(event.target.result);
+            console.log('加载的动画数据:', animationData);
 
-            // 如果已有动画实例，销毁旧动画
             if (animation) {
               animation.destroy();
             }
 
-            // 设置容器初始状态
+            // 清空容器内容并显示加载状态
+            container.innerHTML = '';
             container.style.border = "2px dashed #555";
             container.textContent = "加载中...";
 
@@ -99,28 +99,28 @@
               renderer: 'svg',
               loop: true,
               autoplay: true,
-              animationData: animationData, // 使用上传的 JSON 数据
+              animationData: animationData,
             });
 
             // 动画加载完成
             animation.addEventListener('DOMLoaded', () => {
-              console.log('动画已加载并正在播放');
+              console.log('动画 DOM 加载完成');
               container.style.border = "none";
-              container.textContent = ""; // 清除文字提示
+              container.textContent = ""; // 清空提示文字
             });
 
             // 动画加载失败
             animation.addEventListener('data_failed', () => {
-              console.error('动画加载失败，请检查文件内容');
-              alert('动画加载失败，请检查文件内容');
+              console.error('动画数据加载失败');
               container.style.border = "2px dashed #FF0000";
               container.textContent = "加载失败";
+              alert('动画加载失败，请检查文件内容');
             });
           } catch (error) {
             console.error('JSON 解析错误:', error);
-            alert('上传的文件不是有效的 JSON 动画文件');
             container.style.border = "2px dashed #FF0000";
             container.textContent = "无效的 JSON 文件";
+            alert('上传的文件不是有效的 JSON 动画文件');
           }
         };
 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上传并预览动画</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #animation-container {
+      width: 300px; /* 根据需要调整尺寸 */
+      height: 150px; /* 根据需要调整尺寸 */
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: white;
+      color: black;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: gray;
+    }
+  </style>
+</head>
+<body>
+  <div id="animation-container"></div>
+  <input type="file" id="file-input" accept=".json" />
+  <button id="preview-button" disabled>预览</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('animation-container');
+      const fileInput = document.getElementById('file-input');
+      const previewButton = document.getElementById('preview-button');
+      let animation;
+
+      // 监听文件选择
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+          previewButton.disabled = false; // 启用预览按钮
+        } else {
+          previewButton.disabled = true; // 禁用预览按钮
+        }
+      });
+
+      // 监听预览按钮点击事件
+      previewButton.addEventListener('click', () => {
+        const file = fileInput.files[0];
+        if (!file) {
+          alert('请选择一个动画 JSON 文件');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const animationData = JSON.parse(event.target.result);
+
+          // 如果已有动画实例，销毁旧动画
+          if (animation) {
+            animation.destroy();
+          }
+
+          // 加载动画
+          animation = lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            animationData: animationData, // 使用上传的 JSON 数据
+          });
+
+          // 检查动画加载状态
+          animation.addEventListener('DOMLoaded', () => {
+            console.log('动画已加载并正在播放');
+          });
+
+          animation.addEventListener('data_failed', () => {
+            console.error('动画加载失败，请检查文件内容');
+            alert('动画加载失败，请检查文件内容');
+          });
+        };
+
+        reader.readAsText(file); // 读取文件内容为文本
+      });
+    });
+  </script>
+</body>
+</html>

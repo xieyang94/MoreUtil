@@ -7,30 +7,36 @@
   <!-- 引入 Lottie -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
       background-color: #121212;
       color: white;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       font-family: Arial, sans-serif;
-      overflow: hidden;
     }
     #animation-container {
-      width: 25%; /* 宽度为页面宽度的四分之一 */
-      height: 25%; /* 高度为页面高度的四分之一 */
-      position: relative;
+      width: 50vw; /* 宽度为视口宽度的一半 */
+      height: 50vw; /* 高度与宽度相同，保持正方形 */
+      max-width: 200px; /* 最大宽度 200px，适配手机 */
+      max-height: 200px; /* 最大高度 200px，适配手机 */
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .file-input-wrapper {
-      position: relative;
-      margin-top: auto; /* 将按钮放置在底部 */
-      margin-bottom: 20px;
+      width: 100%;
+      position: fixed;
+      bottom: 20px;
+      display: flex;
+      justify-content: center;
     }
     .file-input-wrapper input[type="file"] {
       font-size: 100px;

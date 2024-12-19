@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>上传并自动预览动画</title>
+  <title>上传并全屏预览动画</title>
   <!-- 引入 Lottie -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
   <style>
@@ -13,27 +13,23 @@
       color: white;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-end;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
       font-family: Arial, sans-serif;
     }
     #animation-container {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 400px;
-      height: 300px;
-      margin-bottom: 20px;
-      border: 2px dashed #555;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #555;
-      overflow: hidden;
+      height: 100%;
+      z-index: -1; /* 确保动画在按钮下方 */
     }
     .file-input-wrapper {
       position: relative;
-      overflow: hidden;
-      display: inline-block;
+      margin-bottom: 20px;
     }
     .file-input-wrapper input[type="file"] {
       font-size: 100px;
@@ -59,7 +55,7 @@
   </style>
 </head>
 <body>
-  <div id="animation-container">预览区域</div>
+  <div id="animation-container"></div>
   <div class="file-input-wrapper">
     <button class="upload-button">上传动画文件</button>
     <input type="file" id="file-input" accept=".json" />
@@ -71,6 +67,7 @@
       const fileInput = document.getElementById('file-input');
       let animation;
 
+      // 监听文件选择
       fileInput.addEventListener('change', () => {
         const file = fileInput.files[0];
         if (!file) {
@@ -88,11 +85,6 @@
               animation.destroy();
             }
 
-            // 清空容器内容并显示加载状态
-            container.innerHTML = '';
-            container.style.border = "2px dashed #555";
-            container.textContent = "加载中...";
-
             // 加载动画
             animation = lottie.loadAnimation({
               container: container,
@@ -104,22 +96,16 @@
 
             // 动画加载完成
             animation.addEventListener('DOMLoaded', () => {
-              console.log('动画 DOM 加载完成');
-              container.style.border = "none";
-              container.textContent = ""; // 清空提示文字
+              console.log('动画已加载并正在播放');
             });
 
             // 动画加载失败
             animation.addEventListener('data_failed', () => {
               console.error('动画数据加载失败');
-              container.style.border = "2px dashed #FF0000";
-              container.textContent = "加载失败";
               alert('动画加载失败，请检查文件内容');
             });
           } catch (error) {
             console.error('JSON 解析错误:', error);
-            container.style.border = "2px dashed #FF0000";
-            container.textContent = "无效的 JSON 文件";
             alert('上传的文件不是有效的 JSON 动画文件');
           }
         };

@@ -39,13 +39,6 @@
       justify-content: center;
       align-items: center;
     }
-    .file-input-wrapper input[type="file"] {
-      font-size: 100px;
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0;
-    }
     .upload-button {
       display: inline-block;
       padding: 10px 20px;
@@ -60,12 +53,15 @@
     .upload-button:hover {
       background-color: #0056b3;
     }
+    #file-input {
+      display: none; /* 隐藏文件输入框 */
+    }
   </style>
 </head>
 <body>
   <div id="animation-container"></div>
   <div class="file-input-wrapper">
-    <button class="upload-button">上传动画文件</button>
+    <button class="upload-button" id="upload-button">上传动画文件</button>
     <input type="file" id="file-input" accept=".json" />
   </div>
 
@@ -73,7 +69,13 @@
     document.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('animation-container');
       const fileInput = document.getElementById('file-input');
+      const uploadButton = document.getElementById('upload-button');
       let animation;
+
+      // 点击按钮触发文件选择器
+      uploadButton.addEventListener('click', () => {
+        fileInput.click();
+      });
 
       // 监听文件选择
       fileInput.addEventListener('change', () => {

@@ -19,14 +19,16 @@
       font-family: Arial, sans-serif;
     }
     #animation-container {
-      width: 300px; /* 根据需要调整尺寸 */
-      height: 150px; /* 根据需要调整尺寸 */
+      width: 100%;
+      max-width: 400px; /* 限制最大宽度 */
+      height: 300px; /* 初始高度 */
       margin-bottom: 20px;
       border: 2px dashed #555;
       display: flex;
       justify-content: center;
       align-items: center;
       color: #555;
+      overflow: hidden;
     }
     .file-input-wrapper {
       position: relative;
@@ -86,6 +88,10 @@
             if (animation) {
               animation.destroy();
             }
+
+            // 设置容器初始状态
+            container.style.border = "2px dashed #555";
+            container.textContent = "加载中...";
 
             // 加载动画
             animation = lottie.loadAnimation({

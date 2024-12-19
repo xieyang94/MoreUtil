@@ -3,74 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>上传并预览动画</title>
+  <title>上传并自动预览动画</title>
   <!-- 引入 Lottie -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
   <style>
     body {
       margin: 0;
-      background-color: black;
+      background-color: #121212;
       color: white;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
+      font-family: Arial, sans-serif;
     }
     #animation-container {
       width: 300px; /* 根据需要调整尺寸 */
       height: 150px; /* 根据需要调整尺寸 */
       margin-bottom: 20px;
+      border: 2px dashed #555;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #555;
     }
-    input[type="file"] {
-      margin-bottom: 10px;
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
     }
-    button {
+    .file-input-wrapper input[type="file"] {
+      font-size: 100px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+    }
+    .upload-button {
+      display: inline-block;
       padding: 10px 20px;
       font-size: 16px;
       border: none;
       border-radius: 5px;
-      background-color: white;
-      color: black;
+      background-color: #007BFF;
+      color: white;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
-    button:hover {
-      background-color: gray;
+    .upload-button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <div id="animation-container"></div>
-  <input type="file" id="file-input" accept=".json" />
-  <button id="preview-button" disabled>预览</button>
+  <div id="animation-container">预览区域</div>
+  <div class="file-input-wrapper">
+    <button class="upload-button">上传动画文件</button>
+    <input type="file" id="file-input" accept=".json" />
+  </div>
 
   <script>
-    // 确保 Lottie 加载后执行代码
     document.addEventListener('DOMContentLoaded', () => {
-      // 检查 lottie 是否已加载
-      if (typeof lottie === 'undefined') {
-        console.error('Lottie 未正确加载，请检查网络或脚本引入');
-        alert('Lottie 未正确加载，请刷新页面或检查网络连接');
-        return;
-      }
-
       const container = document.getElementById('animation-container');
       const fileInput = document.getElementById('file-input');
-      const previewButton = document.getElementById('preview-button');
       let animation;
 
       // 监听文件选择
       fileInput.addEventListener('change', () => {
-        if (fileInput.files.length > 0) {
-          previewButton.disabled = false; // 启用预览按钮
-        } else {
-          previewButton.disabled = true; // 禁用预览按钮
-        }
-      });
-
-      // 监听预览按钮点击事件
-      previewButton.addEventListener('click', () => {
         const file = fileInput.files[0];
         if (!file) {
           alert('请选择一个动画 JSON 文件');
@@ -96,18 +96,25 @@
               animationData: animationData, // 使用上传的 JSON 数据
             });
 
-            // 检查动画加载状态
+            // 动画加载完成
             animation.addEventListener('DOMLoaded', () => {
               console.log('动画已加载并正在播放');
+              container.style.border = "none";
+              container.textContent = ""; // 清除文字提示
             });
 
+            // 动画加载失败
             animation.addEventListener('data_failed', () => {
               console.error('动画加载失败，请检查文件内容');
               alert('动画加载失败，请检查文件内容');
+              container.style.border = "2px dashed #FF0000";
+              container.textContent = "加载失败";
             });
           } catch (error) {
             console.error('JSON 解析错误:', error);
             alert('上传的文件不是有效的 JSON 动画文件');
+            container.style.border = "2px dashed #FF0000";
+            container.textContent = "无效的 JSON 文件";
           }
         };
 

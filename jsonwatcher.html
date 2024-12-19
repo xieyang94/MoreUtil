@@ -17,24 +17,25 @@
       color: white;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       font-family: Arial, sans-serif;
+      overflow: hidden;
     }
     #animation-container {
-      width: 50vw; /* 宽度为视口宽度的一半 */
-      height: 50vw; /* 高度与宽度相同，保持正方形 */
-      max-width: 200px; /* 最大宽度 200px，适配手机 */
-      max-height: 200px; /* 最大高度 200px，适配手机 */
+      width: 50vw; /* 动画宽度为视口宽度的一半 */
+      height: 50vw; /* 动画高度与宽度相等，保持正方形 */
+      max-width: 300px; /* 限制最大宽度为 300px */
+      max-height: 300px; /* 限制最大高度为 300px */
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .file-input-wrapper {
-      width: 100%;
       position: fixed;
       bottom: 20px;
+      width: 100%;
       display: flex;
       justify-content: center;
     }

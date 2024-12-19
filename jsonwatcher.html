@@ -19,18 +19,16 @@
       font-family: Arial, sans-serif;
     }
     #animation-container {
-      width: 300px; /* 预览区域宽度 */
-      height: 300px; /* 预览区域高度 */
-      margin-bottom: auto; /* 将按钮推到底部 */
-      border: 2px dashed #555;
+      width: 50%; /* 宽度为页面宽度的一半 */
+      height: 50%; /* 高度为页面高度的一半 */
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #555;
-      overflow: hidden;
     }
     .file-input-wrapper {
       position: relative;
+      margin-top: auto; /* 将按钮放置在底部 */
       margin-bottom: 20px;
     }
     .file-input-wrapper input[type="file"] {
@@ -57,7 +55,7 @@
   </style>
 </head>
 <body>
-  <div id="animation-container">预览区域</div>
+  <div id="animation-container"></div>
   <div class="file-input-wrapper">
     <button class="upload-button">上传动画文件</button>
     <input type="file" id="file-input" accept=".json" />
@@ -87,11 +85,6 @@
               animation.destroy();
             }
 
-            // 清空容器内容并显示加载状态
-            container.innerHTML = '';
-            container.style.border = "2px dashed #555";
-            container.textContent = "加载中...";
-
             // 加载动画
             animation = lottie.loadAnimation({
               container: container,
@@ -104,21 +97,15 @@
             // 动画加载完成
             animation.addEventListener('DOMLoaded', () => {
               console.log('动画已加载并正在播放');
-              container.style.border = "none";
-              container.textContent = ""; // 清空提示文字
             });
 
             // 动画加载失败
             animation.addEventListener('data_failed', () => {
               console.error('动画数据加载失败');
-              container.style.border = "2px dashed #FF0000";
-              container.textContent = "加载失败";
               alert('动画加载失败，请检查文件内容');
             });
           } catch (error) {
             console.error('JSON 解析错误:', error);
-            container.style.border = "2px dashed #FF0000";
-            container.textContent = "无效的 JSON 文件";
             alert('上传的文件不是有效的 JSON 动画文件');
           }
         };

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上传并预览动画</title>
+  <!-- 引入 Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    #animation-container {
+      width: 50vw; /* 动画宽度为视口宽度的一半 */
+      height: 50vw; /* 动画高度与宽度相等，保持正方形 */
+      max-width: 300px; /* 限制最大宽度为 300px */
+      max-height: 300px; /* 限制最大高度为 300px */
+      margin-top: 10vh; /* 动画上移 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .file-input-wrapper {
+      margin-top: 5vh; /* 上传按钮距离动画的间距 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .upload-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .upload-button:hover {
+      background-color: #0056b3;
+    }
+    #file-input {
+      display: none; /* 隐藏文件输入框 */
+    }
+  </style>
+</head>
+<body>
+  <div id="animation-container"></div>
+  <div class="file-input-wrapper">
+    <button class="upload-button" id="upload-button">上传动画文件</button>
+    <input type="file" id="file-input" accept=".json" />
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('animation-container');
+      const fileInput = document.getElementById('file-input');
+      const uploadButton = document.getElementById('upload-button');
+      let animation;
+
+      // 点击按钮触发文件选择器
+      uploadButton.addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      // 监听文件选择
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (!file) {
+          alert('请选择一个动画 JSON 文件');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          try {
+            const animationData = JSON.parse(event.target.result);
+            console.log('加载的动画数据:', animationData);
+
+            if (animation) {
+              animation.destroy();
+            }
+
+            // 加载动画
+            animation = lottie.loadAnimation({
+              container: container,
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              animationData: animationData,
+            });
+
+            // 动画加载完成
+            animation.addEventListener('DOMLoaded', () => {
+              console.log('动画已加载并正在播放');
+            });
+
+            // 动画加载失败
+            animation.addEventListener('data_failed', () => {
+              console.error('动画数据加载失败');
+              alert('动画加载失败，请检查文件内容');
+            });
+          } catch (error) {
+            console.error('JSON 解析错误:', error);
+            alert('上传的文件不是有效的 JSON 动画文件');
+          }
+        };
+
+        reader.readAsText(file); // 读取文件内容为文本
+      });
+    });
+  </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>上传并预览动画</title>
-  <!-- 正确加载 Lottie 库 -->
+  <!-- 引入 Lottie -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
   <style>
     body {
@@ -46,7 +46,15 @@
   <button id="preview-button" disabled>预览</button>
 
   <script>
+    // 确保 Lottie 加载后执行代码
     document.addEventListener('DOMContentLoaded', () => {
+      // 检查 lottie 是否已加载
+      if (typeof lottie === 'undefined') {
+        console.error('Lottie 未正确加载，请检查网络或脚本引入');
+        alert('Lottie 未正确加载，请刷新页面或检查网络连接');
+        return;
+      }
+
       const container = document.getElementById('animation-container');
       const fileInput = document.getElementById('file-input');
       const previewButton = document.getElementById('preview-button');

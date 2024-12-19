@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>上传并预览动画</title>
+  <!-- 正确加载 Lottie 库 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"></script>
   <style>
     body {
@@ -70,31 +71,36 @@
 
         const reader = new FileReader();
         reader.onload = function (event) {
-          const animationData = JSON.parse(event.target.result);
+          try {
+            const animationData = JSON.parse(event.target.result);
 
-          // 如果已有动画实例，销毁旧动画
-          if (animation) {
-            animation.destroy();
+            // 如果已有动画实例，销毁旧动画
+            if (animation) {
+              animation.destroy();
+            }
+
+            // 加载动画
+            animation = lottie.loadAnimation({
+              container: container,
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              animationData: animationData, // 使用上传的 JSON 数据
+            });
+
+            // 检查动画加载状态
+            animation.addEventListener('DOMLoaded', () => {
+              console.log('动画已加载并正在播放');
+            });
+
+            animation.addEventListener('data_failed', () => {
+              console.error('动画加载失败，请检查文件内容');
+              alert('动画加载失败，请检查文件内容');
+            });
+          } catch (error) {
+            console.error('JSON 解析错误:', error);
+            alert('上传的文件不是有效的 JSON 动画文件');
           }
-
-          // 加载动画
-          animation = lottie.loadAnimation({
-            container: container,
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            animationData: animationData, // 使用上传的 JSON 数据
-          });
-
-          // 检查动画加载状态
-          animation.addEventListener('DOMLoaded', () => {
-            console.log('动画已加载并正在播放');
-          });
-
-          animation.addEventListener('data_failed', () => {
-            console.error('动画加载失败，请检查文件内容');
-            alert('动画加载失败，请检查文件内容');
-          });
         };
 
         reader.readAsText(file); // 读取文件内容为文本
